@@ -56,3 +56,6 @@ credvora/
 
 4. **Run the development server**
   npm run dev
+
+npx inngest-cli@latest dev 
+to open ingest dev server
