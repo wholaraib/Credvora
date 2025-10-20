@@ -10,19 +10,18 @@ const Header = async () => {
   // await checkUser();
 
   return (
-    <header className="fixed top-0 w-full bg-white/80 backdrop-blur-md z-50 border-b">
+    <header className="fixed top-0 w-full bg-white z-50 border-b">
       <nav className="container mx-auto px-4 py-4 flex items-center justify-between">
         <Link href="/">
           <Image
             src={"/logo1.png"}
-            alt="Welth Logo"
+            alt="CredVora Logo"
             width={200}
             height={60}
             className="h-22 w-auto object-contain"
           />
         </Link>
 
-        {/* Navigation Links - Different for signed in/out users */}
         <div className="hidden md:flex items-center space-x-8">
           <SignedOut>
             <a href="#features" className="text-gray-600 hover:text-blue-600">
@@ -37,20 +36,20 @@ const Header = async () => {
           </SignedOut>
         </div>
 
-        {/* Action Buttons */}
         <div className="flex items-center space-x-4">
           <SignedIn>
             <Link
               href="/dashboard"
               className="text-gray-600 hover:text-blue-600 flex items-center gap-2"
             >
-              <Button variant="outline">
-                <LayoutDashboard size={18} />
+              <Button variant="outline"
+              >
+                <LayoutDashboard size={18} /> 
                 <span className="hidden md:inline">Dashboard</span>
               </Button>
             </Link>
             <a href="/transaction/create">
-              <Button className="flex items-center gap-2">
+              <Button className="flex items-center gap-2 btn-primary">
                 <PenBox size={18} />
                 <span className="hidden md:inline">Add Transaction</span>
               </Button>
@@ -65,7 +64,7 @@ const Header = async () => {
             <UserButton
               appearance={{
                 elements: {
-                  avatarBox: "w-10 h-10",
+                  avatarBox: "w-20 h-20",
                 },
               }}
             />

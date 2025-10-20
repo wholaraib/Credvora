@@ -1,6 +1,9 @@
 @import "tailwindcss";
 @import "tw-animate-css";
 
+
+@tailwind utilities;
+
 @custom-variant dark (&:is(.dark *));
 
 @theme inline {
@@ -118,5 +121,24 @@
   }
   body {
     @apply bg-background text-foreground;
+  }
+}
+
+@layer utilities {
+  .gradient-title {
+    background-image: linear-gradient(to bottom right, #0b0829c8, #4ac9c9);
+    font-weight: 800;
+    letter-spacing: -0.025em;
+    padding-right: 0.5rem;
+    padding-bottom: 0.5rem;
+    color: transparent;
+    -webkit-background-clip: text;
+    background-clip: text;
+  }
+}
+
+@layer utilities {
+  .btn-primary {
+    @apply bg-[#120e40c8] text-white hover:bg-[#120e40] transition-colors duration-200;
   }
 }
