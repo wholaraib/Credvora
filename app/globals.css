@@ -126,8 +126,7 @@
 
 @layer utilities {
   .gradient-title {
-        background-image: linear-gradient(135deg, #312E81, #6366F1);
-
+    background-image: linear-gradient(135deg, #312E81, #6366F1);
     font-weight: 800;
     letter-spacing: -0.025em;
     padding-right: 0.5rem;
