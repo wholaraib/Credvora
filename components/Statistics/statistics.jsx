@@ -2,7 +2,7 @@ import { statsData } from "@/data/landing";
 
 const StatisticsSection = () => {
   return (
-    <section className="py-20 bg-blue-100">
+    <section className="py-20 bg-indigo-200">
         <div className="container mx-auto px-4">
           <div className="grid grid-cols-2 md:grid-cols-4 gap-8 text-center">
             {statsData.map((stats,index)=>(
