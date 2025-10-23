@@ -15,7 +15,7 @@ const CallToAction = () => {
         <Link href="/dashboard">
           <Button
             size="lg"
-            className="btn-primary animate-bounce"
+            className="btn-primary animate-bounce cursor-pointer"
           >
             Start Free Trial
           </Button>

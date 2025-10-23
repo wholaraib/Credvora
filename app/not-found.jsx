@@ -13,7 +13,7 @@ export default function NotFound() {
         <p className="text-xl">Oops! The page you're looking for doesn't exist.</p>
       </div>
       <Link href="/" className="mt-8">
-        <Button className="flex items-center gap-2">
+        <Button className="flex items-center gap-2 cursor-pointer">
           <HomeIcon size={18} />
           Back to Home
         </Button>

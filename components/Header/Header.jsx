@@ -10,14 +10,14 @@ const Header = async () => {
   await checkUser();
 
   return (
-    <header className="fixed top-0 w-full bg-white z-50 border-b">
+    <header className="fixed top-0 w-full z-50 border-b bg-white/60 backdrop-blur-md">
       <nav className="container mx-auto px-4 py-4 flex items-center justify-between">
         <Link href="/">
           <Image
-            src={"/logo1.png"}
+            src={"/logo.png"}
             alt="CredVora Logo"
             width={200}
-            height={60}
+            height={200}
             className="h-22 w-auto object-contain"
           />
         </Link>
@@ -42,14 +42,14 @@ const Header = async () => {
               href="/dashboard"
               className="text-gray-600 hover:text-blue-600 flex items-center gap-2"
             >
-              <Button variant="outline"
+              <Button variant="outline" className="cursor-pointer"
               >
                 <LayoutDashboard size={18} /> 
                 <span className="hidden md:inline">Dashboard</span>
               </Button>
             </Link>
             <a href="/transaction/create">
-              <Button className="flex items-center gap-2 btn-primary">
+              <Button className="flex items-center gap-2 btn-primary cursor-pointer">
                 <PenBox size={18} />
                 <span className="hidden md:inline">Add Transaction</span>
               </Button>
@@ -57,7 +57,7 @@ const Header = async () => {
           </SignedIn>
           <SignedOut>
             <SignInButton forceRedirectUrl="/dashboard">
-              <Button variant="outline">Login</Button>
+              <Button variant="outline" className="cursor-pointer">Login</Button>
             </SignInButton>
           </SignedOut>
           <SignedIn>
