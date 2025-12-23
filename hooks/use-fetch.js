@@ -3,7 +3,7 @@ import { toast } from "sonner";
 
 const useFetch = (callback) => {
     const [data, setData] = useState(undefined);
-    const [loading, setLoading] = useState(null);
+    const [loading, setLoading] = useState(false);
     const [error, setError] = useState(null);
 
     const func = async(...args) => {
@@ -21,7 +21,6 @@ const useFetch = (callback) => {
             setLoading(false);
         }
     }
-
     return { data, loading, error, func, setData };
 }
 

@@ -7,7 +7,7 @@ import CallToAction from "@/components/CallToAction/cta";
 
 export default function LandingPage() {
   return (
-    <div className="mt-30">
+    <div className="mt-30 text-foreground">
       <HeroSection />
       <StatisticsSection />
       <FeaturesSection />

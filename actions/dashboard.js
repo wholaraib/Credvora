@@ -34,7 +34,8 @@ export async function createAccount(data) {
       where: { userId: user.id },
     });
 
-    const shouldBeDefault = existingAccounts.length === 0 ? true : !!data.isDefault;
+    const shouldBeDefault =
+      existingAccounts.length === 0 ? true : !!data.isDefault;
 
     if (shouldBeDefault) {
       await db.account.updateMany({
@@ -54,8 +55,12 @@ export async function createAccount(data) {
     });
 
     const serializedAccount = serializeTransaction(account);
-    // revalidate dashboard to refresh cached data
-    try { revalidatePath("/dashboard"); } catch (e) { /* ignore in dev if not available */ }
+
+    try {
+      revalidatePath("/dashboard");
+    } catch (e) {
+      console.log(e);
+    }
 
     return { success: true, data: serializedAccount };
   } catch (error) {
@@ -89,7 +94,6 @@ export async function getUserAccounts() {
       },
     });
 
-    // Serialize accounts before sending to client
     const serializedAccounts = accounts.map(serializeTransaction);
 
     return serializedAccounts;

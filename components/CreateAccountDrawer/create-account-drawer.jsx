@@ -1,5 +1,5 @@
 "use client";
-import { useState, useEffect } from 'react';
+import { useState, useEffect } from "react";
 import {
   Drawer,
   DrawerClose,
@@ -8,9 +8,6 @@ import {
   DrawerTitle,
   DrawerTrigger,
 } from "@/components/ui/drawer";
-import * as reactHookForm from "react-hook-form";
-import { accountSchema } from "@/app/lib/schema";
-import { zodResolver } from "@hookform/resolvers/zod";
 import { Input } from "../ui/input";
 import {
   Select,
@@ -22,9 +19,12 @@ import {
 import { Switch } from "@/components/ui/switch";
 import { Button } from "@/components/ui/button";
 import { toast } from "sonner";
+import { Loader2 } from "lucide-react";
+import * as reactHookForm from "react-hook-form";
+import { accountSchema } from "@/app/lib/schema";
+import { zodResolver } from "@hookform/resolvers/zod";
 import useFetch from "@/hooks/use-fetch";
 import { createAccount } from "@/actions/dashboard";
-import { Loader2 } from "lucide-react";
 
 const CreateAccountDrawer = ({ children }) => {
   const {
@@ -44,27 +44,29 @@ const CreateAccountDrawer = ({ children }) => {
     },
   });
 
-  const { data: newAccount, error, func: createAccountFunc, loading: createAccountLoading } = useFetch(createAccount);
+  const {
+    data: newAccount,
+    error,
+    func: createAccountFunc,
+    loading: createAccountLoading,
+  } = useFetch(createAccount);
 
   useEffect(() => {
-    if(newAccount && !createAccountLoading)
-    {
+    if (newAccount && !createAccountLoading) {
       toast.success("Account created successfully");
       reset();
       setOpenDrawer(false);
     }
-  },[createAccountLoading, newAccount]);
+  }, [createAccountLoading, newAccount]);
 
-    useEffect(() => {
-    if(error)
-    {
+  useEffect(() => {
+    if (error) {
       toast.error(error.message || "Failed to create account");
     }
-  },[error])
+  }, [error]);
 
   const onSubmit = async (data) => {
     await createAccountFunc(data);
-    console.log(data);
   };
 
   const [openDrawer, setOpenDrawer] = useState(false);
@@ -211,7 +213,13 @@ const CreateAccountDrawer = ({ children }) => {
                 className="flex-1 btn-primary cursor-pointer"
                 disabled={createAccountLoading}
               >
-                {createAccountLoading ? (<><Loader2 className="animate-spin"/> Creating...</>) : "Create Account"}
+                {createAccountLoading ? (
+                  <>
+                    <Loader2 className="animate-spin" /> Creating...
+                  </>
+                ) : (
+                  "Create Account"
+                )}
               </Button>
             </div>
           </div>

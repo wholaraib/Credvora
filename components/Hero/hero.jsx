@@ -44,7 +44,7 @@ const HeroSection = () => {
         <div className="hero-image-wrapper md:flex-1 mt-6 md:mt-0 flex justify-center md:justify-end">
           <div className="hero-image w-full max-w-[420px] md:max-w-[640px] mx-auto relative">
             {/* subtle framed background for depth */}
-            <div className="absolute -inset-1 rounded-lg bg-gradient-to-br from-transparent to-transparent pointer-events-none shadow-2xl"></div>
+            <div className="absolute -inset-1 rounded-lg bg-gradient-to-br from-transparent to-transparent pointer-events-none"></div>
 
             <Image
               src="/cover.png"
@@ -52,7 +52,7 @@ const HeroSection = () => {
               height={720}
               alt="Dashboard Preview"
               priority
-              className="w-full h-auto object-contain rounded-lg shadow-xl border border-gray-100"
+              className="w-full h-auto object-contain"
             />
           </div>
         </div>
