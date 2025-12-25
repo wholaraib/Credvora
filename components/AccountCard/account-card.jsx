@@ -1,4 +1,3 @@
-import React from "react";
 import {
   Card,
   CardContent,
@@ -24,21 +23,21 @@ const AccountCard = ({ account, onSetDefault }) => {
   } = useFetch(updateDefaultAccount);
 
   const handleDefaultChange = async (e) => {
-  e.preventDefault();
-  if (account.isDefault) {
-    toast.warning("You need at least 1 default account.");
-    return;
-  }
+    e.preventDefault();
+    if (account.isDefault) {
+      toast.warning("You need at least 1 default account.");
+      return;
+    }
 
-  onSetDefault(account.id);
+    onSetDefault(account.id);
+    toast.success("Default account updated successfully.");
 
-  try {
-    await updateDefaultAccFunc(account.id);
-  } catch {
-    toast.error("Failed to update default account.");
-  }
-};
-
+    try {
+      await updateDefaultAccFunc(account.id);
+    } catch {
+      toast.error("Failed to update default account.");
+    }
+  };
 
   return (
     <Card className="relative overflow-hidden bg-white dark:bg-slate-900 hover:shadow-lg transition-all duration-200 border border-slate-200 dark:border-slate-800">

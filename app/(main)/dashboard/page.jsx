@@ -1,14 +1,12 @@
 import CreateAccountDrawer from "@/components/CreateAccountDrawer/create-account-drawer";
-import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { Plus } from "lucide-react";
 import { getUserAccounts } from "@/actions/dashboard";
-import AccountsClient from "./_components/accounts-client";
+import AccountsClientCard from "./_components/accounts-client";
 
 async function Dashboard() {
 
   const accounts = await getUserAccounts();
- 
   return (
     <div>
       {/* Budget Progress  */}
@@ -28,7 +26,7 @@ async function Dashboard() {
           </Card>
         </CreateAccountDrawer>
 
-        <AccountsClient initialAccounts={accounts} />
+        <AccountsClientCard initialAccounts={accounts} />
       </div>
     </div>
   );
