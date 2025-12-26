@@ -5,8 +5,13 @@ import Dashboard from "./page";
 const DashboardLayout = () => {
   return (
     <div className="px-5">
-      {/* Dashboard Page */}
-      <Suspense fallback={<BarLoader className="mt-4" width={"100%"} color="#120e40c8" />}>
+      <Suspense
+        fallback={
+          <div className="min-h-[80vh] flex justify-center items-center">
+            <BarLoader width="40%" color="#120e40c8" />
+          </div>
+        }
+      >
         <Dashboard />
       </Suspense>
     </div>

@@ -3,8 +3,9 @@
 import { useState } from "react";
 import AccountCard from "@/components/AccountCard/account-card";
 
-const AccountsClient = ({ initialAccounts }) => {
+const AccountsClientCard = ({ initialAccounts }) => {
   const [accounts, setAccounts] = useState(initialAccounts);
+
   const setDefaultOptimistically = (id) => {
     setAccounts((prev) =>
       prev.map((acc) => ({
@@ -27,4 +28,4 @@ const AccountsClient = ({ initialAccounts }) => {
   );
 };
 
-export default AccountsClient;
+export default AccountsClientCard;

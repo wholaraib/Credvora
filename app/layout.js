@@ -9,6 +9,14 @@ import { Toaster } from "@/components/ui/sonner";
 export const metadata = {
   title: "CredVora",
   description: "Solution for your financial needs",
+  icons: {
+    icon: [
+      { url: "/logo.png", type: "image/png", sizes: "32x32" },
+      { url: "/logo.png", type: "image/png", sizes: "16x16" },
+    ],
+    apple: "/logo.png",
+    shortcut: "/logo.png",
+  },
 };
 
 export default function RootLayout({ children }) {
