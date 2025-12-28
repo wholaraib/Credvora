@@ -1,9 +1,12 @@
 "use client";
-import { useState } from "react";
+import { useState, useEffect, useMemo } from "react";
 import { Checkbox } from "@/components/ui/checkbox";
 import { format, formatDate } from "date-fns";
 import { useRouter } from "next/navigation";
 import { categoryColors } from "@/data/categories";
+import { bulkDeleteTransactions } from "@/actions/accounts";
+import useFetch from "@/hooks/use-fetch";
+import { toast } from "sonner";
 import {
   Table,
   TableBody,
@@ -41,7 +44,10 @@ import {
   ChevronDown,
   ArrowUpDown,
   Search,
+  Trash,
+  X,
 } from "lucide-react";
+import { BarLoader } from "react-spinners";
 
 const RECURRING_INTERVALS = {
   DAILY: "Daily",
@@ -52,7 +58,6 @@ const RECURRING_INTERVALS = {
 
 const TransactionTable = ({ transactions }) => {
   const router = useRouter();
-  const filteredAndSortedTransactions = transactions;
   const [selectedIds, setSelectedIds] = useState([]);
   const [sortConfig, setSortConfig] = useState({
     field: "",
@@ -61,6 +66,60 @@ const TransactionTable = ({ transactions }) => {
   const [searchTerm, setSearchTerm] = useState("");
   const [typeFilter, setTypeFilter] = useState("");
   const [recurringFilter, setRecurringFilter] = useState("");
+
+  const {
+    loading: deleteLoading,
+    func: deleteFunction,
+    data: deletedData,
+  } = useFetch(bulkDeleteTransactions);
+
+  const filteredAndSortedTransactions = useMemo(() => {
+    let result = [...transactions];
+
+    // Search Filter
+    if (searchTerm) {
+      const searchLower = searchTerm.toLowerCase();
+      result = result.filter((transaction) => {
+        return transaction.description?.toLowerCase().includes(searchLower);
+      });
+    }
+
+    // Recurring Filter
+    if (recurringFilter) {
+      result = result.filter((transaction) => {
+        if (recurringFilter === "recurring") return transaction.isRecurring;
+        return !transaction.isRecurring;
+      });
+    }
+
+    // Type Filter
+    if (typeFilter) {
+      result = result.filter((transaction) => transaction.type === typeFilter);
+    }
+
+    // Apply Sorting
+    result.sort((a, b) => {
+      let comparison = 0;
+
+      switch (sortConfig.field) {
+        case "date":
+          comparison = new Date(a.date) - new Date(b.date);
+          break;
+        case "amount":
+          comparison = a.amount - b.amount;
+          break;
+        case "category":
+          comparison = a.category.localeCompare(b.category);
+          break;
+        default:
+          comparison = 0;
+      }
+
+      return sortConfig.direction === "asc" ? comparison : -comparison;
+    });
+
+    return result;
+  }, [transactions, searchTerm, typeFilter, recurringFilter, sortConfig]);
 
   const handleSort = (field) => {
     setSortConfig((current) => {
@@ -90,10 +149,42 @@ const TransactionTable = ({ transactions }) => {
         : filteredAndSortedTransactions.map((transaction) => transaction.id);
     });
   };
-
-  const deleteTransaction = () => {
-    console.log("Transaction deleted!");
+  const handleClearFilters = () => {
+    setSearchTerm("");
+    setRecurringFilter("");
+    setTypeFilter("");
+    setSelectedIds([]);
   };
+
+  const handleDelete = async (ids) => {
+    console.log("delete function called!")
+    if (
+      !window.confirm(
+        `Are you sure you want to delete ${ids.length} ${
+          ids.length > 1 ? "transactions" : "transaction"
+        }?`
+      )
+    )
+      return;
+
+    try {
+      await deleteFunction(ids);
+      setSelectedIds([]);
+    } catch {
+      toast.error(
+        `Failed to delete ${ids.length > 1 ? "transactions" : "transaction"}`
+      );
+    }
+  };
+
+  useEffect(() => {
+    if (deletedData && !deleteLoading) {
+      toast.warning("Transactions deleted successfully!", {
+        icon: <Trash className="h-4 w-4 text-yellow-700" />,
+      });
+    }
+  }, [deletedData, deleteLoading]);
+
   return (
     <div className="space-y-4">
       {/* Filters */}
@@ -102,7 +193,7 @@ const TransactionTable = ({ transactions }) => {
           <Search className="absolute left-2 top-2.5 h-4 w-4 text-muted-foreground" />
           <Input
             className="pl-8"
-            placeholder="Search transactions..."
+            placeholder="Search by description..."
             value={searchTerm}
             onChange={(e) => setSearchTerm(e.target.value)}
           />
@@ -134,11 +225,38 @@ const TransactionTable = ({ transactions }) => {
             </SelectContent>
           </Select>
 
-          {selectedIds.length > 0 && (<div>
-            <Button className="bg-red-700 hover:bg-red-600">Delete {selectedIds.length} {selectedIds.length > 1 ? "transactions" : "transaction"}</Button>
-            </div>)}
+          {selectedIds.length > 0 && (
+            <div className="flex items-center">
+              <Button
+                className="bg-red-700 hover:bg-red-600"
+                onClick={() => handleDelete(selectedIds)}
+                disabled={deleteLoading}
+              >
+                {" "}
+                <Trash className="h-4 w-4 mr-1" /> Delete {selectedIds.length}{" "}
+                {selectedIds.length > 1 ? "transactions" : "transaction"}
+              </Button>
+            </div>
+          )}
+          {(searchTerm || recurringFilter || typeFilter) && (
+            <Button
+              variant="outline"
+              className="hover:bg-gray-100"
+              size="icon"
+              onClick={handleClearFilters}
+              title="Clear Filters"
+            >
+              <X className="h-4 w-4" />
+            </Button>
+          )}
         </div>
       </div>
+      {/* Delete loading indicator */}
+
+      {deleteLoading && (
+        <BarLoader className="mt-4" width={"100%"} color="#120e40c8" />
+      )}
+
       {/* Transactions */}
       <div className="rounded-md border">
         <div className="pl-6 pt-3 pb-3 border-b border-slate-200 dark:border-slate-800">
@@ -317,7 +435,7 @@ const TransactionTable = ({ transactions }) => {
                           <DropdownMenuItem
                             className="text-sm text-destructive"
                             onClick={() => {
-                              deleteTransaction([transaction.id]);
+                              handleDelete([transaction.id]);
                             }}
                           >
                             Delete

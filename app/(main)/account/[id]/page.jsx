@@ -2,12 +2,13 @@ import Link from "next/link";
 import { getAccountWithTransactions } from "@/actions/accounts";
 import { notFound } from "next/navigation";
 import { Suspense } from "react";
-import { BarLoader } from "react-spinners";
+import { PulseLoader } from "react-spinners";
 import TransactionTable from "../_components/transaction-table";
-import { ArrowLeft} from "lucide-react";
+import { ArrowLeft } from "lucide-react";
 
 export default async function AccountsPage({ params }) {
-  const accountsData = await getAccountWithTransactions(params.id);
+  const { id } = await params;
+  const accountsData = await getAccountWithTransactions(id);
   if (!accountsData) {
     notFound();
   }
@@ -68,7 +69,7 @@ export default async function AccountsPage({ params }) {
         </h2>
         <Suspense
           fallback={
-            <BarLoader className="mt-4" width={"100%"} color="#120e40c8" />
+            <PulseLoader className="mt-4" width={"100%"} color="#120e40c8" />
           }
         >
           <div className="h-64 flex items-center justify-center text-slate-500 dark:text-slate-400">
@@ -80,7 +81,7 @@ export default async function AccountsPage({ params }) {
       {/* Transactions Table */}
       <Suspense
         fallback={
-          <BarLoader className="mt-4" width={"100%"} color="#120e40c8" />
+          <PulseLoader className="mt-4" width={"100%"} color="#120e40c8" />
         }
       >
         <TransactionTable transactions={transactions} />

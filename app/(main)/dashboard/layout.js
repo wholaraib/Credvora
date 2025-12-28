@@ -1,5 +1,5 @@
 import React, { Suspense } from "react";
-import { BarLoader } from "react-spinners";
+import { ClipLoader } from "react-spinners";
 import Dashboard from "./page";
 
 const DashboardLayout = () => {
@@ -8,7 +8,7 @@ const DashboardLayout = () => {
       <Suspense
         fallback={
           <div className="min-h-[80vh] flex justify-center items-center">
-            <BarLoader width="40%" color="#120e40c8" />
+            <ClipLoader width="60%" color="#120e40c8" />
           </div>
         }
       >
