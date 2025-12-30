@@ -1,4 +1,5 @@
 "use client";
+
 import { useState, useEffect, useMemo } from "react";
 import { Checkbox } from "@/components/ui/checkbox";
 import { format, formatDate } from "date-fns";
@@ -46,6 +47,8 @@ import {
   Search,
   Trash,
   X,
+  ChevronLeft,
+  ChevronRight,
 } from "lucide-react";
 import { BarLoader } from "react-spinners";
 
@@ -55,6 +58,8 @@ const RECURRING_INTERVALS = {
   MONTHLY: "Monthly",
   YEARLY: "Yearly",
 };
+
+const ITEMS_PER_PAGE = 10;
 
 const TransactionTable = ({ transactions }) => {
   const router = useRouter();
@@ -66,6 +71,7 @@ const TransactionTable = ({ transactions }) => {
   const [searchTerm, setSearchTerm] = useState("");
   const [typeFilter, setTypeFilter] = useState("");
   const [recurringFilter, setRecurringFilter] = useState("");
+  const [currentPage, setCurrentPage] = useState(1);
 
   const {
     loading: deleteLoading,
@@ -154,10 +160,11 @@ const TransactionTable = ({ transactions }) => {
     setRecurringFilter("");
     setTypeFilter("");
     setSelectedIds([]);
+    setCurrentPage(1);
   };
 
   const handleDelete = async (ids) => {
-    console.log("delete function called!")
+    console.log("delete function called!");
     if (
       !window.confirm(
         `Are you sure you want to delete ${ids.length} ${
@@ -179,11 +186,32 @@ const TransactionTable = ({ transactions }) => {
 
   useEffect(() => {
     if (deletedData && !deleteLoading) {
-      toast.warning("Transactions deleted successfully!", {
-        icon: <Trash className="h-4 w-4 text-yellow-700" />,
+      toast.info("Transactions deleted successfully!", {
+        icon: <Trash className="h-4 w-4 text-blue-800" />,
       });
     }
   }, [deletedData, deleteLoading]);
+
+  // Pagination Calculation
+  const totalPages = Math.ceil(
+    filteredAndSortedTransactions.length / ITEMS_PER_PAGE
+  );
+  const paginatedTransactions = useMemo(() => {
+    const startIndex = (currentPage - 1) * ITEMS_PER_PAGE;
+    return filteredAndSortedTransactions.slice(
+      startIndex,
+      startIndex + ITEMS_PER_PAGE
+    );
+  }, [filteredAndSortedTransactions, currentPage]);
+
+  const handlePageChange = (newPage) => {
+    setCurrentPage(newPage);
+    setSelectedIds([]);
+  };
+
+  useEffect(() => {
+    setCurrentPage(1);
+  }, [searchTerm, typeFilter, recurringFilter, sortConfig]);
 
   return (
     <div className="space-y-4">
@@ -271,8 +299,8 @@ const TransactionTable = ({ transactions }) => {
                 <Checkbox
                   onCheckedChange={handleSelectAll}
                   checked={
-                    filteredAndSortedTransactions.length > 0 &&
-                    selectedIds.length === filteredAndSortedTransactions.length
+                    selectedIds.length === paginatedTransactions.length &&
+                    paginatedTransactions.length > 0
                   }
                 />
               </TableHead>
@@ -337,7 +365,7 @@ const TransactionTable = ({ transactions }) => {
             </TableRow>
           </TableHeader>
           <TableBody>
-            {filteredAndSortedTransactions.length === 0 ? (
+            {paginatedTransactions.length === 0 ? (
               <TableRow>
                 <TableCell
                   colSpan={7}
@@ -347,7 +375,7 @@ const TransactionTable = ({ transactions }) => {
                 </TableCell>
               </TableRow>
             ) : (
-              filteredAndSortedTransactions.map((transaction) => {
+              paginatedTransactions.map((transaction) => {
                 return (
                   <TableRow key={transaction.id}>
                     <TableCell>
@@ -450,6 +478,35 @@ const TransactionTable = ({ transactions }) => {
           </TableBody>
         </Table>
       </div>
+
+      {/*Pagination*/}
+      {totalPages > 1 && (
+        <div className="flex items-center justify-center gap-2">
+          <Button
+            variant="outline"
+            size="icon"
+            onClick={() => {
+              handlePageChange(currentPage - 1);
+            }}
+            disabled={currentPage === 1}
+          >
+            <ChevronLeft className="h-4 w-4" />
+          </Button>
+          <span className="text-sm">
+            Page {currentPage} of {totalPages}
+          </span>
+          <Button
+            variant="outline"
+            size="icon"
+            onClick={() => {
+              handlePageChange(currentPage + 1);
+            }}
+            disabled={currentPage === totalPages}
+          >
+            <ChevronRight className="h-4 w-4" />
+          </Button>
+        </div>
+      )}
     </div>
   );
 };

@@ -13,7 +13,7 @@ import { updateDefaultAccount } from "@/actions/accounts";
 import { toast } from "sonner";
 
 const AccountCard = ({ account, onSetDefault }) => {
-  const { name, type, balance, id, isDefault } = account;
+  const { name, type, balance, id } = account;
 
   const {
     data: updateAccount,
@@ -35,7 +35,7 @@ const AccountCard = ({ account, onSetDefault }) => {
     try {
       await updateDefaultAccFunc(account.id);
     } catch {
-      toast.error("Failed to update default account.");
+      toast.error(error.message || "Failed to update default account.");
     }
   };
 

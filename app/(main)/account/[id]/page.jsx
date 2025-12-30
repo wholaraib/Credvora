@@ -5,6 +5,7 @@ import { Suspense } from "react";
 import { PulseLoader } from "react-spinners";
 import TransactionTable from "../_components/transaction-table";
 import { ArrowLeft } from "lucide-react";
+import AccountChart from "../_components/account-chart";
 
 export default async function AccountsPage({ params }) {
   const { id } = await params;
@@ -63,20 +64,13 @@ export default async function AccountsPage({ params }) {
       </div>
 
       {/* Chart Section */}
-      <div className="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-xl p-6 shadow-sm">
-        <h2 className="text-lg font-semibold text-slate-900 dark:text-white mb-4">
-          Transaction Overview
-        </h2>
-        <Suspense
-          fallback={
-            <PulseLoader className="mt-4" width={"100%"} color="#120e40c8" />
-          }
-        >
-          <div className="h-64 flex items-center justify-center text-slate-500 dark:text-slate-400">
-            Chart visualization coming soon
-          </div>
-        </Suspense>
-      </div>
+      <Suspense
+        fallback={
+          <PulseLoader className="mt-4" width={"100%"} color="#120e40c8" />
+        }
+      >
+        <AccountChart transactions={transactions} />
+      </Suspense>
 
       {/* Transactions Table */}
       <Suspense
