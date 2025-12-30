@@ -56,7 +56,7 @@ const AccountCard = ({ account, onSetDefault }) => {
         </CardHeader>
         <CardContent className="relative">
           <div className="text-2xl font-bold text-slate-900 dark:text-white tracking-tight">
-            ${parseFloat(balance).toFixed(2)}
+            ₹{parseFloat(balance).toFixed(2)}
           </div>
           <p className="text-xs text-slate-500 dark:text-slate-400 capitalize mt-1">
             {type.charAt(0).toUpperCase() + type.slice(1).toLowerCase()} Account
