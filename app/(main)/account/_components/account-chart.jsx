@@ -1,5 +1,4 @@
 "use client";
-
 import { useState, useMemo } from "react";
 import {
   BarChart,
@@ -143,9 +142,8 @@ export default function AccountChart({ transactions }) {
               <Tooltip
                 formatter={(value) => [`₹${value}`, undefined]}
                 contentStyle={{
-                  backgroundColor: "hsl(var(--popover))",
-                  border: "1px solid hsl(var(--border))",
-                  borderRadius: "var(--radius)",
+                  borderRadius: "8px",
+                  fontSize: "14px",
                 }}
               />
               <Legend />
