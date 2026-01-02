@@ -21,6 +21,11 @@ const BudgetProgress = ({ initialBudget, currentExpenses }) => {
   const [newBudget, setNewBudget] = useState(
     initialBudget?.amount?.toString() || ""
   );
+  const [optimisticBudget, setOptimisticBudget] = useState(
+    initialBudget?.amount
+  );
+  const displayBudget = optimisticBudget || initialBudget?.amount;
+
   const {
     loading: isLoading,
     func: updateBudgetFunction,
@@ -28,16 +33,27 @@ const BudgetProgress = ({ initialBudget, currentExpenses }) => {
     error,
   } = useFetch(updateBudget);
 
-  const percentageUsed = initialBudget
-    ? (currentExpenses / initialBudget.amount) * 100
+  const percentageUsed = displayBudget
+    ? (currentExpenses / displayBudget) * 100
     : 0;
+
   const handleUpdateBudget = async () => {
     const amount = parseFloat(newBudget);
     if (isNaN(amount) || amount <= 0) {
       toast.error("Please enter a valid amount");
       return;
     }
-    await updateBudgetFunction(amount);
+    const previousBudget = displayBudget;
+    setOptimisticBudget(amount);
+    setIsEditing(false);
+    toast.success("Budget updated successfully");
+    try {
+      await updateBudgetFunction(amount);
+    } catch {
+      setOptimisticBudget(previousBudget);
+      setIsEditing(true);
+      toast.error(error.message || "Failed to update default account.");
+    }
   };
   const handleCancel = () => {
     setNewBudget(initialBudget?.amount?.toString() || 0);
@@ -45,16 +61,16 @@ const BudgetProgress = ({ initialBudget, currentExpenses }) => {
   };
   useEffect(() => {
     if (updatedBudget?.success) {
-      setIsEditing(false);
-      toast.success("Budget updates successfully");
+      setOptimisticBudget(updatedBudget.data.amount);
     }
   }, [updatedBudget]);
-
   useEffect(() => {
-    if (error) {
-      toast.error(error.message || "Failed to update Budget");
+    if (initialBudget?.amount != null) {
+      setOptimisticBudget(initialBudget.amount);
+      setNewBudget(initialBudget.amount.toString());
     }
-  }, [error]);
+  }, [initialBudget]);
+
   return (
     <Card>
       <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
@@ -92,10 +108,10 @@ const BudgetProgress = ({ initialBudget, currentExpenses }) => {
             ) : (
               <>
                 <CardDescription>
-                  {initialBudget
+                  {displayBudget
                     ? `₹${currentExpenses.toFixed(
                         2
-                      )} of ₹${initialBudget.amount.toFixed(2)} spent`
+                      )} of ₹${displayBudget.toFixed(2)} spent`
                     : "No Budget set"}
                 </CardDescription>
                 <Button
@@ -116,16 +132,7 @@ const BudgetProgress = ({ initialBudget, currentExpenses }) => {
       <CardContent>
         {initialBudget && (
           <div className="space-y-2">
-            <Progress
-              value={percentageUsed}
-              extraStyles={`${
-                percentageUsed >= 90
-                  ? "bg-red-500"
-                  : percentageUsed >= 75
-                  ? "bg-yellow-500"
-                  : "bg-green-500"
-              }`}
-            />
+            <Progress value={percentageUsed} />
           </div>
         )}
       </CardContent>
