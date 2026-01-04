@@ -164,6 +164,7 @@ const TransactionTable = ({ transactions }) => {
   };
 
   const handleDelete = async (ids) => {
+    console.log(ids);
     console.log("delete function called!");
     if (
       !window.confirm(
