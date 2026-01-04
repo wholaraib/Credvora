@@ -57,5 +57,8 @@ credvora/
 4. **Run the development server**
   npm run dev
 
-npx inngest-cli@latest dev 
-to open ingest dev server
+5. **Run the inngest server**
+   npx inngest-cli@latest dev to open ingest dev server
+
+5. **Run the email dev server**
+   npm run email:dev to run react email server
