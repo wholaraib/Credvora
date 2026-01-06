@@ -1,4 +1,3 @@
-"use server"
 import { auth } from "@clerk/nextjs/server";
 import { db } from "@/lib/prisma";
 import { revalidatePath } from "next/cache";
@@ -78,27 +77,4 @@ function calculateNextRecurringDate(startDate, interval) {
       date.setFullYear(date.getFullYear() + 1);
       break;
   }
-}
-
-
-export async function getTransaction(id) {
-  const { userId } = await auth();
-  if (!userId) throw new Error("Unauthorized");
-
-  const user = await db.user.findUnique({
-    where: { clerkUserId: userId },
-  });
-
-  if (!user) throw new Error("User not found");
-
-  const transaction = await db.transaction.findUnique({
-    where: {
-      id,
-      userId: user.id,
-    },
-  });
-
-  if (!transaction) throw new Error("Transaction not found");
-
-  return serializeAmount(transaction);
 }
