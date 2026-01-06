@@ -1,25 +1,51 @@
+"use server";
 import { auth } from "@clerk/nextjs/server";
 import { db } from "@/lib/prisma";
 import { revalidatePath } from "next/cache";
 
-const serializeAmount = (obj) => {
-  return {
-    ...obj,
-    amount: obj.amount.toNumber(),
-  };
-};
+const serializeAmount = (obj) => ({
+  ...obj,
+  amount: obj.amount.toNumber(),
+});
+
 export async function createTransaction(data) {
   try {
     const { userId } = await auth();
     if (!userId) throw new Error("Unauthorized");
 
-    const user = await db.user.findUnique({
-      where: {
-        clerkUserId: userId,
-      },
+    // Get request data for ArcJet
+    const req = await request();
+
+    // Check rate limit
+    const decision = await aj.protect(req, {
+      userId,
+      requested: 1, // Specify how many tokens to consume
     });
 
-    if (!user) throw new Error("User not found");
+    if (decision.isDenied()) {
+      if (decision.reason.isRateLimit()) {
+        const { remaining, reset } = decision.reason;
+        console.error({
+          code: "RATE_LIMIT_EXCEEDED",
+          details: {
+            remaining,
+            resetInSeconds: reset,
+          },
+        });
+
+        throw new Error("Too many requests. Please try again later.");
+      }
+
+      throw new Error("Request blocked");
+    }
+
+    const user = await db.user.findUnique({
+      where: { clerkUserId: userId },
+    });
+
+    if (!user) {
+      throw new Error("User not found");
+    }
 
     const account = await db.account.findUnique({
       where: {
@@ -27,12 +53,18 @@ export async function createTransaction(data) {
         userId: user.id,
       },
     });
-    if (!account) throw new Error("Account not found");
-    const balanceChange = data.type === "INCOME" ? data.amount : -data.amount;
+
+    if (!account) {
+      throw new Error("Account not found");
+    }
+
+    // Calculate new balance
+    const balanceChange = data.type === "EXPENSE" ? -data.amount : data.amount;
     const newBalance = account.balance.toNumber() + balanceChange;
 
+    // Create transaction and update account balance
     const transaction = await db.$transaction(async (tx) => {
-      const newTransacition = await tx.transaction.create({
+      const newTransaction = await tx.transaction.create({
         data: {
           ...data,
           userId: user.id,
@@ -44,21 +76,42 @@ export async function createTransaction(data) {
       });
 
       await tx.account.update({
-        where: { id: account.id },
+        where: { id: data.accountId },
         data: { balance: newBalance },
       });
-      return newTransacition;
+
+      return newTransaction;
     });
 
     revalidatePath("/dashboard");
-    revalidatePath(`/account/${transaction.account.id}`);
-    return {
-      success: true,
-      date: serializeAmount(transaction),
-    };
-  } catch(error) {
+    revalidatePath(`/account/${transaction.accountId}`);
+
+    return { success: true, data: serializeAmount(transaction) };
+  } catch (error) {
     throw new Error(error.message);
   }
+}
+
+export async function getTransaction(id) {
+  const { userId } = await auth();
+  if (!userId) throw new Error("Unauthorized");
+
+  const user = await db.user.findUnique({
+    where: { clerkUserId: userId },
+  });
+
+  if (!user) throw new Error("User not found");
+
+  const transaction = await db.transaction.findUnique({
+    where: {
+      id,
+      userId: user.id,
+    },
+  });
+
+  if (!transaction) throw new Error("Transaction not found");
+
+  return serializeAmount(transaction);
 }
 
 function calculateNextRecurringDate(startDate, interval) {
