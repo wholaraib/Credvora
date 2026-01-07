@@ -87,18 +87,13 @@ export default function AddTransactionForm({
     data: transactionResult,
   } = useFetch(createTransaction);
 
-  const onSubmit = (data) => {
+  const onSubmit = async (data) => {
     const formData = {
       ...data,
       amount: parseFloat(data.amount),
     };
     console.log("Submitting form data:", formData);
     transactionFn(formData);
-    // if (editMode) {
-    //   transactionFn(editId, formData);
-    // } else {
-    //   transactionFn(formData);
-    // }
   };
 
   const handleScanComplete = (scannedData) => {

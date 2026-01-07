@@ -7,7 +7,8 @@ import Link from "next/link";
 
 const AddTransactionPage = async ({ searchParams }) => {
   const accounts = await getUserAccounts();
-  const editId = searchParams?.edit;
+  const params = await searchParams;
+  const editId = params?.edit;
 
   let initialData = null;
   if (editId) {

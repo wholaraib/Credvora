@@ -21,7 +21,7 @@ const useFetch = (callback) => {
       setLoading(false);
     }
   };
-  return { data, loading, error, func, setData };
+  return { data, loading, error, func, fn: func, setData };
 };
 
 export default useFetch;
