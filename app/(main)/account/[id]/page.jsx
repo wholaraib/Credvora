@@ -8,6 +8,7 @@ import { ArrowLeft } from "lucide-react";
 import AccountChart from "../_components/account-chart";
 
 export default async function AccountsPage({ params }) {
+  console.log("Rendering account page");
   const { id } = await params;
   const accountsData = await getAccountWithTransactions(id);
   if (!accountsData) {

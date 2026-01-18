@@ -25,8 +25,10 @@ import { accountSchema } from "@/app/lib/schema";
 import { zodResolver } from "@hookform/resolvers/zod";
 import useFetch from "@/hooks/use-fetch";
 import { createAccount } from "@/actions/dashboard";
+import { useRouter } from "next/navigation";
 
 const CreateAccountDrawer = ({ children }) => {
+  const router = useRouter();
   const {
     register,
     handleSubmit,
@@ -56,8 +58,9 @@ const CreateAccountDrawer = ({ children }) => {
       toast.success("Account created successfully");
       reset();
       setOpenDrawer(false);
+      router.refresh();
     }
-  }, [createAccountLoading, newAccount]);
+  }, [createAccountLoading, newAccount, router]);
 
   useEffect(() => {
     if (error) {
