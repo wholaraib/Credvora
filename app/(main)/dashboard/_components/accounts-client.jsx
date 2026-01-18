@@ -1,10 +1,14 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import AccountCard from "@/components/AccountCard/account-card";
 
 const AccountsClientCard = ({ initialAccounts }) => {
   const [accounts, setAccounts] = useState(initialAccounts);
+
+  useEffect(() => {
+    setAccounts(initialAccounts);
+  }, [initialAccounts]);
 
   const setDefaultOptimistically = (id) => {
     setAccounts((prev) =>

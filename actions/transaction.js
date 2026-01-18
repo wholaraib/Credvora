@@ -132,3 +132,6 @@ function calculateNextRecurringDate(startDate, interval) {
   }
   return date;
 }
+export async function scanReceipt(file){
+  
+}
