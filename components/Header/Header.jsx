@@ -10,7 +10,7 @@ const Header = async () => {
   await checkUser();
 
   return (
-    <header className="fixed top-0 w-full z-50 border-b bg-white/60 backdrop-blur-md">
+    <header className="fixed top-0 w-full z-50 border-b bg-white/60 backdrop-blur-sm">
       <nav className="container mx-auto px-4 py-4 flex items-center justify-between">
         <Link href="/">
           <Image
