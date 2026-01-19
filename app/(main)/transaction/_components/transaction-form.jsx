@@ -36,7 +36,8 @@ import CreateAccountDrawer from "@/components/CreateAccountDrawer/create-account
 import { cn } from "@/lib/utils";
 import { createTransaction } from "@/actions/transaction";
 import { transactionSchema } from "@/app/lib/schema";
-
+import ReceiptScanner from "./receipt-scanner";
+import { ScanText } from "lucide-react";
 export default function AddTransactionForm({
   accounts,
   categories,
@@ -57,28 +58,27 @@ export default function AddTransactionForm({
     reset,
   } = useForm({
     resolver: zodResolver(transactionSchema),
-    defaultValues:
-      initialData
-        ? {
-            type: initialData.type,
-            amount: initialData.amount.toString(),
-            description: initialData.description,
-            accountId: initialData.accountId,
-            category: initialData.category,
-            date: new Date(initialData.date),
-            isRecurring: initialData.isRecurring,
-            ...(initialData.recurringInterval && {
-              recurringInterval: initialData.recurringInterval,
-            }),
-          }
-        : {
-            type: "EXPENSE",
-            amount: "",
-            description: "",
-            accountId: accounts.find((ac) => ac.isDefault)?.id,
-            date: new Date(),
-            isRecurring: false,
-          },
+    defaultValues: initialData
+      ? {
+          type: initialData.type,
+          amount: initialData.amount.toString(),
+          description: initialData.description,
+          accountId: initialData.accountId,
+          category: initialData.category,
+          date: new Date(initialData.date),
+          isRecurring: initialData.isRecurring,
+          ...(initialData.recurringInterval && {
+            recurringInterval: initialData.recurringInterval,
+          }),
+        }
+      : {
+          type: "EXPENSE",
+          amount: "",
+          description: "",
+          accountId: accounts.find((ac) => ac.isDefault)?.id,
+          date: new Date(),
+          isRecurring: false,
+        },
   });
 
   const {
@@ -97,17 +97,18 @@ export default function AddTransactionForm({
   };
 
   const handleScanComplete = (scannedData) => {
-    if (scannedData) {
-      setValue("amount", scannedData.amount.toString());
-      setValue("date", new Date(scannedData.date));
-      if (scannedData.description) {
-        setValue("description", scannedData.description);
-      }
-      if (scannedData.category) {
-        setValue("category", scannedData.category);
-      }
-      toast.success("Receipt scanned successfully");
-    }
+    console.log("Scanned Data:", scannedData);
+    // if (scannedData) {
+    //   setValue("amount", scannedData.amount.toString());
+    //   setValue("date", new Date(scannedData.date));
+    //   if (scannedData.description) {
+    //     setValue("description", scannedData.description);
+    //   }
+    //   if (scannedData.category) {
+    //     setValue("category", scannedData.category);
+    //   }
+    //   toast.success("Receipt scanned successfully");
+    // }
   };
 
   useEffect(() => {
@@ -132,6 +133,19 @@ export default function AddTransactionForm({
 
   return (
     <form onSubmit={handleSubmit(onSubmit)} className="space-y-8">
+      {/* AI Receipt Scanner */}
+      <div className="space-y-3">
+        <div className="flex items-center gap-2 justify-center">
+          <ScanText className="h-4 w-4 text-slate-500" />
+          <label className="text-sm font-semibold text-slate-900 dark:text-white">
+            Scan Receipt
+          </label>
+        </div>
+        <div className="flex flex-row justify-center">
+          <ReceiptScanner onScanComplete={() => handleScanComplete(data)} />
+        </div>
+      </div>
+
       {/* Type Selection */}
       <div className="space-y-3">
         <div className="flex items-center gap-2">
