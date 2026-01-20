@@ -8,8 +8,7 @@ import { Camera } from "lucide-react";
 import { toast } from "sonner";
 
 const ReceiptScanner = ({ onScanComplete }) => {
-   const fileInputRef = useRef(null);
-
+  const fileInputRef = useRef(null);
   const {
     loading: scanReceiptLoading,
     fn: scanReceiptFunc,
@@ -17,12 +16,10 @@ const ReceiptScanner = ({ onScanComplete }) => {
   } = useFetch(scanReceipt);
 
   const handleReceiptScan = async (file) => {
-    console.log("Selected file:", file);
     if (file.size > 5 * 1024 * 1024) {
-      toast.error("File size should be less than 5MB");
+      toast.error("File size exceeds 5MB limit.");
       return;
     }
-
     await scanReceiptFunc(file);
   };
 
