@@ -8,7 +8,7 @@ import { Camera } from "lucide-react";
 import { toast } from "sonner";
 
 const ReceiptScanner = ({ onScanComplete }) => {
-  const fileInputRef = useRef();
+  const fileInputRef = useRef(null);
   const {
     loading: scanReceiptLoading,
     fn: scanReceiptFunc,
@@ -24,15 +24,15 @@ const ReceiptScanner = ({ onScanComplete }) => {
   };
 
   useEffect(() => {
-    if(scannedData && !scanReceiptLoading){
-        onScanComplete(scannedData);
-        toast.success("Receipt scanned successfully!");
+    if (scannedData && !scanReceiptLoading) {
+      onScanComplete(scannedData);
+      toast.success("Receipt scanned successfully");
     }
-  },[scanReceiptLoading,scannedData])
+  }, [scanReceiptLoading, scannedData]);
 
   return (
     <div>
-      <input
+       <input
         type="file"
         ref={fileInputRef}
         className="hidden"
@@ -40,9 +40,7 @@ const ReceiptScanner = ({ onScanComplete }) => {
         capture="environment"
         onChange={(e) => {
           const file = e.target.files?.[0];
-          if (file) {
-            handleReceiptScan(file);
-          }
+          if (file) handleReceiptScan(file);
         }}
       />
       <Button
