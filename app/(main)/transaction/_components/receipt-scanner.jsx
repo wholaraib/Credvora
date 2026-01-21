@@ -36,7 +36,7 @@ const ReceiptScanner = ({ onScanComplete }) => {
 
   return (
     <div>
-      <input
+       <input
         type="file"
         ref={fileInputRef}
         className="hidden"
