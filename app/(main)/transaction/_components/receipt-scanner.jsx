@@ -1,7 +1,7 @@
 "use client";
 
 import useFetch from "@/hooks/use-fetch";
-import { useEffect, useRef } from 'react';
+import { useEffect, useRef } from "react";
 import { scanReceipt } from "@/actions/transaction";
 import { Button } from "@/components/ui/button";
 import { Camera } from "lucide-react";
@@ -20,7 +20,11 @@ const ReceiptScanner = ({ onScanComplete }) => {
       toast.error("File size exceeds 5MB limit.");
       return;
     }
-    await scanReceiptFunc(file);
+
+    const formData = new FormData();
+    formData.append("receipt", file);
+
+    await scanReceiptFunc(formData);
   };
 
   useEffect(() => {
@@ -32,7 +36,7 @@ const ReceiptScanner = ({ onScanComplete }) => {
 
   return (
     <div>
-       <input
+      <input
         type="file"
         ref={fileInputRef}
         className="hidden"
