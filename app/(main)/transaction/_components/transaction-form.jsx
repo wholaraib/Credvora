@@ -142,7 +142,7 @@ export default function AddTransactionForm({
           </label>
         </div>
         <div className="flex flex-row justify-center">
-          <ReceiptScanner onScanComplete={() => handleScanComplete(data)} />
+          <ReceiptScanner onScanComplete={handleScanComplete} />
         </div>
       </div>
 
