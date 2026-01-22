@@ -160,19 +160,23 @@ export async function scanReceipt(formData) {
               },
             },
             {
-              text: `
-Extract receipt data and return ONLY valid JSON:
+              text: `Analyze this receipt image and extract the following information in JSON format:
+      - Total amount (just the number)
+      - Date (in ISO format)
+      - Description or items purchased (brief summary)
+      - Merchant/store name
+      - Suggested category (one of: housing,transportation,groceries,utilities,entertainment,food,shopping,healthcare,education,personal,travel,insurance,gifts,bills,other-expense )
+      
+      Only respond with valid JSON in this exact format:
+      {
+        "amount": number,
+        "date": "ISO date string",
+        "description": "string",
+        "merchantName": "string",
+        "category": "string"
+      }
 
-{
-  "amount": number,
-  "date": "YYYY-MM-DD",
-  "description": "string",
-  "merchantName": "string",
-  "category": "string"
-}
-
-If this is not a receipt, return {}.
-              `,
+      If its not a recipt, return an empty object`,
             },
           ],
         },
